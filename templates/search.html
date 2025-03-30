@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Disease PDF Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        h2 {
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+        .search-box {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .search-input-wrapper {
+            position: relative;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 45px 15px 20px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+            color: #000;
+        }
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3em;
+            color: #0072ff;
+            cursor: pointer;
+        }
+        .results {
+            margin-top: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+        }
+        .suggestion-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 99;
+        }
+        .suggestion-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            color: #000;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .suggestion-item:hover {
+            background: #f0f0f0;
+        }
+        .mention-count {
+            float: right;
+            color: #0072ff;
+            font-weight: normal;
+        }
+        pre.preview-text {
+            background: #fff;
+            color: #000;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1em;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>How can we help?</h2>
+    <form method="POST" class="search-box" id="search-form">
+        <div class="search-input-wrapper">
+            <input type="text" name="query" id="search-box" autocomplete="off"
+                   placeholder="Enter a disease like dengue, covid..." value="{{ query }}">
+            <span class="search-icon" onclick="submitSearch()">🔍</span>
+        </div>
+        <div id="suggestions" class="suggestion-dropdown" style="display:none;"></div>
+    </form>
+
+    <div id="file-preview" class="results" style="display:none;"></div>
+
+    {% if results %}
+    <div class="results">
+        <h3>Results for "{{ query }}"</h3>
+        {% for r in results %}
+            <div class="suggestion-item" onclick="event.preventDefault(); loadPreview('{{ r.name }}')">
+                {{ r.name }} <span class="mention-count">{{ r.count }} mention(s)</span>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+const input = document.getElementById("search-box");
+const suggestionsBox = document.getElementById("suggestions");
+const form = document.getElementById("search-form");
+
+input.addEventListener("input", function () {
+    const query = input.value.trim();
+    if (query.length < 3 || query.endsWith(".pdf")) {
+        suggestionsBox.style.display = "none";
+        return;
+    }
+
+    fetch(`/suggest?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.length > 0) {
+                suggestionsBox.innerHTML = data.map(item =>
+                    `<div class="suggestion-item" onclick="event.preventDefault(); loadPreview('${item.file}'); suggestionsBox.style.display='none';">
+                        ${item.file}<span class="mention-count">${item.count} mention(s)</span>
+                    </div>`
+                ).join("");
+                suggestionsBox.style.display = "block";
+            } else {
+                suggestionsBox.style.display = "none";
+            }
+        });
+});
+
+input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        form.submit();
+    }
+});
+
+function submitSearch() {
+    form.submit();
+}
+
+function loadPreview(filename) {
+    fetch(`/preview/${filename}`)
+        .then(res => res.json())
+        .then(data => {
+            const previewBox = document.getElementById("file-preview");
+            previewBox.style.display = "block";
+
+            if (data.preview) {
+                previewBox.innerHTML = `
+                    <h3>${data.filename}</h3>
+                    <pre class="preview-text">${data.preview.join('\n')}</pre>`;
+            } else {
+                previewBox.innerHTML = `<p style="color:red;">Error: ${data.error || "No data available"}</p>`;
+            }
+        })
+        .catch(err => {
+            document.getElementById("file-preview").innerHTML = `<p style="color:red;">Preview error: ${err}</p>`;
+        });
+}
+</script>
+</body>
+</html>
