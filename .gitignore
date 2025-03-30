@@ -1,4 +1,52 @@
-.venv/
-.idea/
+# Byte-compiled / cache / temp files
 __pycache__/
-*.pyc
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+pip-wheel-metadata/
+
+# PyCharm project settings
+.idea/
+
+# VS Code project settings (optional)
+.vscode/
+
+# Test files
+.pytest_cache/
+.coverage
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+*.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Secret files (manually managed)
+.env
+*.env
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archive and package files
+*.zip
+*.tar
+*.tar.gz
+*.7z
+
+# Azure deployment artifacts (if any)
+*.azure-pipelines/
