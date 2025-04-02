@@ -5,9 +5,9 @@ import fitz  # PyMuPDF
 import io
 from flask_cors import CORS
 
-# Initialize Flask app
-# If your React build is in a subfolder (e.g., ui_react/build), change static_folder accordingly.
-app = Flask(__name__, static_folder='build', static_url_path='')
+# Initialize Flask app and enable CORS.
+# Change the static_folder path if your React build is located elsewhere.
+app = Flask(__name__, static_folder='ui_react/build', static_url_path='')
 CORS(app)
 
 # Retrieve configuration from environment variables.
@@ -55,12 +55,12 @@ def search_azure_ai(query):
         ranked.sort(key=lambda x: x["count"], reverse=True)
     return ranked
 
-# Serve the React app's index.html for the root URL.
+# Serve the React app's index.html at the root URL.
 @app.route('/', methods=['GET'])
 def serve_react():
     return send_from_directory(app.static_folder, 'index.html')
 
-# API endpoint for search, used by the React frontend.
+# API endpoint for search.
 @app.route('/api/search', methods=['POST'])
 def api_search():
     data = request.get_json() or {}
@@ -81,6 +81,7 @@ def api_search():
                 results = ranked[1:]
     return jsonify({"results": results, "selected": selected})
 
+# API endpoint for suggestions.
 @app.route("/suggest")
 def suggest():
     query = request.args.get("q", "")
@@ -94,6 +95,7 @@ def suggest():
         print("❌ Error in /suggest:", str(e))
         return jsonify({"error": str(e)}), 500
 
+# API endpoint for PDF preview.
 @app.route("/preview/<filename>")
 def preview_pdf(filename):
     sas_url = f"https://rndaisearchstorage.blob.core.windows.net/{CONTAINER_NAME}/{filename}?{SAS_TOKEN}"
@@ -116,6 +118,7 @@ def preview_pdf(filename):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# API endpoint for file details.
 @app.route("/file-details/<filename>")
 def file_details(filename):
     return jsonify({
@@ -126,6 +129,7 @@ def file_details(filename):
         "Size": "N/A"
     })
 
+# Health check endpoint.
 @app.route("/health")
 def health():
     return "OK", 200

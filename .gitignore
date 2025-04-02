@@ -1,27 +1,34 @@
-# Byte-compiled / cache / temp files
+# -----------------------
+# Python / Flask artifacts
+# -----------------------
 __pycache__/
 *.py[cod]
 *.so
 *.egg
 *.egg-info/
 dist/
-build/           # Ignores any folder named "build" at the root level
+# Ignore any build folder at the root level, if present.
+build/
 *.log
 
+# -----------------------
 # Virtual environments
+# -----------------------
 .venv/
 venv/
 env/
 ENV/
 pip-wheel-metadata/
 
-# PyCharm project settings
+# -----------------------
+# IDE Settings
+# -----------------------
 .idea/
-
-# VS Code project settings (optional)
 .vscode/
 
-# Test files
+# -----------------------
+# Test, Coverage & Temporary Files
+# -----------------------
 .pytest_cache/
 .coverage
 .tox/
@@ -30,26 +37,40 @@ coverage.xml
 *.cover
 *.pytest_cache/
 
-# Jupyter Notebook checkpoints
+# -----------------------
+# Jupyter Notebook Checkpoints
+# -----------------------
 .ipynb_checkpoints
 
-# Secret files (manually managed)
+# -----------------------
+# Secret Files (manually managed)
+# -----------------------
 .env
 *.env
 
-# OS-generated files
+# -----------------------
+# OS-Generated Files
+# -----------------------
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# Archive and package files
+# -----------------------
+# Archive and Package Files
+# -----------------------
 *.zip
 *.tar
 *.tar.gz
 *.7z
 
-# Azure deployment artifacts (if any)
+# -----------------------
+# Azure Deployment Artifacts (if any)
+# -----------------------
 *.azure-pipelines/
 
-# Exception: Ensure React build folder in the frontend is tracked
+# -----------------------
+# React / Frontend
+# -----------------------
+# Ignore all root-level build directories, but allow the ui_react/build folder to be tracked.
+build/
 !ui_react/build/
