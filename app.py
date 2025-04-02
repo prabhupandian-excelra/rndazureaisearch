@@ -1,10 +1,14 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import requests
 import fitz  # PyMuPDF
 import io
 import os
+from flask_cors import CORS
 
-app = Flask(__name__)
+# Initialize Flask app and enable CORS
+# Set static_folder to "build" where your React production build will reside.
+app = Flask(__name__, static_folder='build', static_url_path='')
+CORS(app)
 
 SEARCH_ENDPOINT = os.getenv("SEARCH_ENDPOINT")
 INDEX_NAME = os.getenv("INDEX_NAME")
@@ -12,6 +16,7 @@ API_VERSION = os.getenv("API_VERSION", "2023-07-01-Preview")
 API_KEY = os.getenv("API_KEY")
 CONTAINER_NAME = os.getenv("CONTAINER_NAME", "rndaicontainer")
 SAS_TOKEN = os.getenv("SAS_TOKEN")
+
 
 def search_azure_ai(query):
     print("🔍 Searching Azure for:", query)
@@ -61,13 +66,19 @@ def search_azure_ai(query):
 
     return ranked
 
-@app.route("/", methods=["GET", "POST"])
-def search():
+# Serve the React app's index.html for the root URL.
+@app.route('/', methods=['GET'])
+def serve_react():
+    return send_from_directory(app.static_folder, 'index.html')
+
+# API endpoint for search, to be used by the React frontend.
+@app.route('/api/search', methods=['POST'])
+def api_search():
+    data = request.get_json() or {}
+    query = data.get("query", "")
     results = []
-    query = ""
     selected = {}
-    if request.method == "POST":
-        query = request.form.get("query")
+    if query:
         ranked = search_azure_ai(query)
         if ranked:
             if query.lower().endswith(".pdf"):
@@ -78,7 +89,7 @@ def search():
             else:
                 selected = ranked[0]
                 results = ranked[1:]
-    return render_template("search.html", results=results, query=query, selected=selected)
+    return jsonify({"results": results, "selected": selected})
 
 @app.route("/suggest")
 def suggest():
@@ -138,4 +149,5 @@ def health():
     return "OK", 200
 
 if __name__ == "__main__":
+    # For production, set debug to False.
     app.run(debug=False)
