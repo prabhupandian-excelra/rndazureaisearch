@@ -5,7 +5,7 @@ __pycache__/
 *.egg
 *.egg-info/
 dist/
-build/
+build/           # Ignores any folder named "build" at the root level
 *.log
 
 # Virtual environments
@@ -50,3 +50,6 @@ desktop.ini
 
 # Azure deployment artifacts (if any)
 *.azure-pipelines/
+
+# Exception: Ensure React build folder in the frontend is tracked
+!ui_react/build/
