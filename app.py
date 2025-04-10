@@ -11,13 +11,12 @@ app = Flask(__name__, static_folder='ui_react/build', static_url_path='')
 CORS(app)
 
 # Retrieve configuration from environment variables.
-SEARCH_ENDPOINT = "https://rndpocsearchai.search.windows.net"
-INDEX_NAME = "disease-index"
-API_VERSION = "2023-07-01-Preview"
-API_KEY = "zqW8l0r1uSOJrz6cBXgWM40nxcMcEpUsWEr7oECFqqAzSeCWcDB1"
-CONTAINER_NAME = "rndaicontainer"
-SAS_TOKEN = "sp=r&st=2025-03-30T08:03:42Z&se=2025-04-05T16:03:42Z&spr=https&sv=2024-11-04&sr=c&sig=nLDwtPosAo4IrybwrAW96FCNoYcQ4oCmZqRebW2xitY%3D"
-
+SEARCH_ENDPOINT = os.getenv("SEARCH_ENDPOINT")
+INDEX_NAME = os.getenv("INDEX_NAME")
+API_VERSION = os.getenv("API_VERSION", "2023-07-01-Preview")
+API_KEY = os.getenv("API_KEY")
+CONTAINER_NAME = os.getenv("CONTAINER_NAME", "rndaicontainer")
+SAS_TOKEN = os.getenv("SAS_TOKEN")
 
 
 def search_azure_ai(query):
