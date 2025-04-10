@@ -18,6 +18,7 @@ API_KEY = os.getenv("API_KEY")
 CONTAINER_NAME = os.getenv("CONTAINER_NAME", "rndaicontainer")
 SAS_TOKEN = os.getenv("SAS_TOKEN")
 
+
 def search_azure_ai(query):
     print("🔍 Searching Azure for:", query)
     url = f"{SEARCH_ENDPOINT}/indexes/{INDEX_NAME}/docs/search?api-version={API_VERSION}"
