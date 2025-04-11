@@ -68,4 +68,4 @@ jobs:
         with:
           app-name: 'rndaisearchapp1'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FF68CF846B2A4168AE54D2CB959E18A9 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_85B407212D06420089AA2A5C7400B97D }}
