@@ -10,7 +10,7 @@ from flask_cors import CORS
 app = Flask(__name__, static_folder='ui_react/build', static_url_path='')
 CORS(app)
 
-# Retrieve configuration from environment variables.
+# Retrieve configuration from environment variables.- test
 SEARCH_ENDPOINT = os.getenv("SEARCH_ENDPOINT")
 INDEX_NAME = os.getenv("INDEX_NAME")
 API_VERSION = os.getenv("API_VERSION", "2023-07-01-Preview")
