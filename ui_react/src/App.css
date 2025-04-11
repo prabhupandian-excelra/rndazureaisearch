@@ -1,6 +1,6 @@
-.App {
+/* .App {
   text-align: center;
-}
+} */
 
 .App-logo {
   height: 40vmin;
@@ -28,11 +28,37 @@
   color: #61dafb;
 }
 
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #01a4b8;
+}
+
+.mainContent {
+  padding: 20px;
+  background-color: #f9f8fd;
+  margin: 0px 10px 0px 10px;
+  min-height: 90vh;
+  border-radius: 5px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+.MuiTab-root.Mui-selected {
+  color: #01a4b8 !important;
+  font-weight: bold;
+  background: #e7f7f6;
+}
+
+/* Active tab underline color */
+.MuiTabs-indicator {
+  background-color: #01a4b8 !important;
 }

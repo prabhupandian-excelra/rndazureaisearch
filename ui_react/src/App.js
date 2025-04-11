@@ -1,24 +1,11 @@
 // File: src/App.js
-import React, { useState } from 'react';
-import SearchBar from './components/SearchBar';
-import ResultsList from './components/ResultsList';
-import DetailsPanel from './components/DetailsPanel';
+import React from 'react';
+import Layout from './components/Layout';
 
-function App() {
-  // Global state: search results and the selected result.
-  const [results, setResults] = useState([]);
-  const [selected, setSelected] = useState(null);
-
-  return (
-    <div style={{ padding: '20px' }}>
-      <h1>Azure AI Search: How Can I help you?</h1>
-      <SearchBar setResults={setResults} />
-      <div style={{ display: 'flex', marginTop: '20px' }}>
-        <ResultsList results={results} onSelect={setSelected} />
-        {selected && <DetailsPanel data={selected} />}
-      </div>
-    </div>
-  );
-}
+const App = () => (
+  <div className="App" style={{background:'#f9f8fd', height:'100%'}}>
+    <Layout />
+  </div>
+)
 
 export default App;
