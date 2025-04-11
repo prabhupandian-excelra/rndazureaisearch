@@ -1,7 +1,16 @@
-import React, { useState, useEffect } from 'react';
-
-function SearchBar({ setResults }) {
-  const [query, setQuery] = useState('');
+import React, { useState, useEffect } from "react";
+import {
+  TextField,
+  Button,
+  List,
+  ListItem,
+  Paper,
+  Grid,
+} from "@mui/material";
+import { ClickAwayListener } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+const SearchBar = ({ setData, selected }) => {
+  const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
   // Fetch suggestions as the user types
@@ -17,7 +26,7 @@ function SearchBar({ setResults }) {
         const data = await response.json();
         setSuggestions(data);
       } catch (error) {
-        console.error('Error fetching suggestions:', error);
+        console.error("Error fetching suggestions:", error);
       }
     };
 
@@ -26,11 +35,11 @@ function SearchBar({ setResults }) {
 
   // Handle form submission for search
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.file ? setQuery(e.file) : e.preventDefault();
     try {
-      const response = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query }),
       });
       const data = await response.json();
@@ -42,77 +51,74 @@ function SearchBar({ setResults }) {
       if (data.results && data.results.length > 0) {
         combined.push(...data.results);
       }
-      setResults(combined);
+      setData(combined);
     } catch (error) {
-      console.error('Search error:', error);
-    }
-    setSuggestions([]);
-  };
-
-  // Optionally handle suggestion clicks to trigger a search
-  const handleSuggestionClick = async (sug) => {
-    setQuery(sug.file); // assuming your suggestion object uses "file" as the key
-    try {
-      const response = await fetch('/api/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: sug.file }),
-      });
-      const data = await response.json();
-      const combined = [];
-      if (data.selected && Object.keys(data.selected).length > 0) {
-        combined.push(data.selected);
-      }
-      if (data.results && data.results.length > 0) {
-        combined.push(...data.results);
-      }
-      setResults(combined);
-    } catch (error) {
-      console.error('Search error:', error);
+      console.error("Search error:", error);
     }
     setSuggestions([]);
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit} style={{ marginBottom: '10px' }}>
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Enter a disease term or PDF file..."
-          style={{ padding: '8px', width: '300px' }}
-        />
-        <button type="submit" style={{ padding: '8px 12px', marginLeft: '5px' }}>
-          Search
-        </button>
-      </form>
-      {suggestions.length > 0 && (
-        <ul
-          style={{
-            border: '1px solid #ccc',
-            listStyle: 'none',
-            padding: '0',
-            width: '300px',
-          }}
-        >
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        position: "relative",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <Grid style={{ position: "relative", width: "100%" }}>
+        <Grid sx={{ display: "flex" }}>
+          <TextField
+            // variant="outlined"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Enter a disease term or PDF file..."
+            fullWidth
+            size="small"
+            sx={{ background: "#ffffff" }}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ padding: "8px 12px", background: "#0e747a" }}
+          >
+            <SearchIcon />
+          </Button>
+        </Grid>
+        <ClickAwayListener onClickAway={() => setSuggestions([])}>
+  <div style={{ position: "relative" }}>
+    {suggestions.length > 0 && !selected && (
+      <Paper
+        elevation={3}
+        sx={{
+          position: "absolute",
+          top: "100%",
+          left: 0,
+          width: "100%",
+          zIndex: 10,
+          mt: 1,
+        }}
+      >
+        <List>
           {suggestions.map((sug, idx) => (
-            <li
+            <ListItem
               key={idx}
-              style={{
-                cursor: 'pointer',
-                padding: '5px',
-                borderBottom: '1px solid #eee',
-              }}
-              onClick={() => handleSuggestionClick(sug)}
+              button
+              onClick={() => handleSubmit(sug)}
+              sx={{ borderBottom: "1px solid #eee" }}
             >
               {sug.file} ({sug.count})
-            </li>
+            </ListItem>
           ))}
-        </ul>
-      )}
-    </div>
+        </List>
+      </Paper>
+    )}
+  </div>
+</ClickAwayListener>
+      </Grid>
+    </form>
   );
-}
+};
 
 export default SearchBar;

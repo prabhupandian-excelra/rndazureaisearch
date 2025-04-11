@@ -1,21 +1,29 @@
-import React from 'react';
+import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from "@mui/material";
 
-function DetailsPanel({ data }) {
-  return (
-    <div style={{ width: '40%', border: '1px solid #ccc', padding: '10px' }}>
-      <h2>Details</h2>
-      <p>
-        <strong>Name:</strong> {data.name}
-      </p>
-      <p>
-        <strong>Count:</strong> {data.count}
-      </p>
-      <p>
-        <strong>Snippet:</strong>
-      </p>
-      <pre>{data.snippet}</pre>
-    </div>
-  );
-}
+const DetailsPanel = ({ data }) => (
+  <TableContainer
+    component={Paper}
+    sx={{ margin: "auto", mt: 3 }}
+  >
+    <Table>
+      <TableBody>
+        {Object.entries(data).map(([key, value], index) => (
+          <TableRow key={index}>
+            <TableCell sx={{ fontWeight: "bold" }}>{key}</TableCell>
+            <TableCell>{value}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </TableContainer>
+);
 
 export default DetailsPanel;
